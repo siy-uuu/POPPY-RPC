@@ -6,7 +6,7 @@
 시작하기
 ```
 -production
-[다운받기](https://github.com/siy-uuu/POPPY-RPC/packages)
+https://github.com/siy-uuu/POPPY-RPC/packages
 
 - development
 npm install
