@@ -1,38 +1,65 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "AppleSDGothicNeoB00";
+    src: url("/public/fonts/AppleSDGothicNeoB.ttf");
+}
+@font-face {
+    font-family: "AppleSDGothicNeoEB00";
+    src: url("/public/fonts/AppleSDGothicNeoEB.ttf");
+}
+@font-face {
+    font-family: "AppleSDGothicNeoH00";
+    src: url("/public/fonts/AppleSDGothicNeoH.ttf");
+}
+@font-face {
+    font-family: "AppleSDGothicNeoM00";
+    src: url("/public/fonts/AppleSDGothicNeoM.ttf");
+}
+@font-face {
+    font-family: "AppleSDGothicNeoSB00";
+    src: url("/public/fonts/AppleSDGothicNeoSB.ttf");
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+    font-family: "TossFaceFontMac";
+    src: url("/public/fonts/TossFaceFontMac.ttf");
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+body {
+    animation: backgroundChange 20s ease-in-out infinite;  
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
   }
+
+@keyframes backgroundChange {
+    0% {
+        background-position: 0 5%;
+    }
+    50% {
+        background-position: 10% 5%;
+    }
+    100% {
+        background-position: 0 5%;
+    }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.app-region-drag {
+    -webkit-app-region: drag;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.no-drag {
+    -webkit-app-region: no-drag;
 }

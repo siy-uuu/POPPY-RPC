@@ -1,38 +1,104 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "poppy-music",
+    "description": "POPPY RPC",
+    "version": "0.2.0",
+    "author": "siy-uuu",
+    "license": "MIT",
+    "private": true,
+    "main": "./public/electron.js",
+    "homepage": ".",
+    "repository": {
+        "type": "git",
+        "url": "Github HTTPS 주소"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.5.2",
+        "@fortawesome/free-brands-svg-icons": "^6.5.2",
+        "@fortawesome/free-regular-svg-icons": "^6.5.2",
+        "@fortawesome/free-solid-svg-icons": "^6.5.2",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "axios": "^1.7.2",
+        "discord-rpc": "^4.0.1",
+        "electron-log": "^5.1.5",
+        "electron-updater": "^6.2.1",
+        "event-source-polyfill": "^1.0.31",
+        "pretty-ms": "^9.0.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.23.1",
+        "react-scripts": "5.0.1",
+        "react-toastify": "^10.0.5",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "electron": "wait-on http://localhost:3000 && electron .",
+        "dev": "concurrently \"npm run start\" \"npm run electron\"",
+        "pack": "electron-builder --dir",
+        "dist": "npm run build && electron-builder"
+    },
+    "build": {
+        "appId": "com.poppy.music",
+        "files": [
+            "build/**/*",
+            "node_modules/**/*"
+        ],
+        "directories": {
+            "buildResources": "./build/",
+            "output": "./dist/"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true,
+            "installerLanguages": "ko-KR",
+            "language": 1042,
+            "shortcutName": "POPPY MUSIC",
+            "uninstallDisplayName": "POPPY MUSIC"
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                }
+            ],
+            "icon": "./public/image/icon.jpg"
+        }
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.19",
+        "concurrently": "^8.2.2",
+        "electron": "^31.2.0",
+        "electron-builder": "^22.14.5",
+        "postcss": "^8.4.38",
+        "postcss-loader": "^8.1.1",
+        "tailwindcss": "^3.4.4",
+        "wait-on": "^7.2.0"
+    }
 }
