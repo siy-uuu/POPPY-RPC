@@ -30,26 +30,12 @@ const Main = () => {
     const [intervalId, setIntervalId] = useState(null);
 
     useEffect(() => {
-        window.api.receive("localStorage", (data) => {
-            switch (data?.type) {
-                case "get":
-                    break;
-
-                case "set":
-                    break;
-
-                case "delete":
-                    break;
-            }
-        });
-
         window.api.receive("user", (user) => {
             setUsername(user.global_name ? user.global_name : user.username);
             if (user.avatar !== "null" && user.avatar !== null) setProfile(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
         });
 
         window.api.receive("update", (data) => {
-            console.log(data);
             clearInterval(intervalId);
 
             setTitle(data?.track?.title || "POPPY MUSIC");

@@ -35,7 +35,7 @@ const mainwindow_Start = async () => {
         },
     });
 
-    // mainwindow.setMenu(null); // ctrl + W
+    mainwindow.setMenu(null); // ctrl + W
 
     if (!await session.get()) {
         mainwindow.loadURL(

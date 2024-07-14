@@ -11,21 +11,12 @@
     src: url("/public/fonts/AppleSDGothicNeoEB.ttf");
 }
 @font-face {
-    font-family: "AppleSDGothicNeoH00";
-    src: url("/public/fonts/AppleSDGothicNeoH.ttf");
-}
-@font-face {
     font-family: "AppleSDGothicNeoM00";
     src: url("/public/fonts/AppleSDGothicNeoM.ttf");
 }
 @font-face {
     font-family: "AppleSDGothicNeoSB00";
     src: url("/public/fonts/AppleSDGothicNeoSB.ttf");
-}
-
-@font-face {
-    font-family: "TossFaceFontMac";
-    src: url("/public/fonts/TossFaceFontMac.ttf");
 }
 
 body {
