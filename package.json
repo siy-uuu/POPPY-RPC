@@ -19,6 +19,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.7.2",
         "discord-rpc": "^4.0.1",
+        "dotenv": "^16.4.5",
         "electron-log": "^5.1.5",
         "electron-updater": "^6.2.1",
         "event-source-polyfill": "^1.0.31",
