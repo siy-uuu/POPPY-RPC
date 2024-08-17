@@ -6,7 +6,6 @@ class User {
     async refresh() {
         let session = await new Session().get();
         if (!session) {
-            require("electron").ipcRenderer.send("login");
             return;
         }
 
@@ -17,12 +16,10 @@ class User {
                 },
             })
             .catch((e) => {
-                require("electron").ipcRenderer.send("login");
                 return;
             });
 
-        if (req.status !== 200) {
-            require("electron").ipcRenderer.send("login");
+        if (req?.status !== 200) {
             return;
         }
 

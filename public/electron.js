@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { app, BrowserWindow, Menu, Tray, nativeImage, ipcMain, shell } = require("electron")
+const { app, BrowserWindow, Menu, Tray, nativeImage, ipcMain, shell } = require("electron");
 const log = require("electron-log");
 const url = require("url");
 const path = require("path");
@@ -37,7 +37,7 @@ const mainwindow_Start = async () => {
 
     mainwindow.setMenu(null); // ctrl + W
 
-    if (!await session.get()) {
+    if (!(await session.get())) {
         mainwindow.loadURL(
             process.env?.NODE_ENV === "development"
                 ? "http://localhost:3000/#/login"
@@ -62,17 +62,6 @@ const mainwindow_Start = async () => {
     mainwindow.loadURL(
         process.env?.NODE_ENV === "development" ? "http://localhost:3000" : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/" })
     );
-
-    mainwindow.once("ready-to-show", async () => {
-        if (!userData) {
-            mainwindow.loadURL(
-                process.env?.NODE_ENV === "development"
-                    ? "http://localhost:3000/#/login"
-                    : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/login" })
-            );
-            return mainwindow.show();
-        }
-    });
 
     mainwindow.webContents.once("did-finish-load", async () => {
         await mainwindow.webContents.send("user", userData);

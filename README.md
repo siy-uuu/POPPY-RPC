@@ -14,8 +14,4 @@ npm run dev
 ```
 
 ## 출시에 도움을 주신 분들
-<<<<<<< HEAD
 - [@remuring9999](https://github.com/remuring9999)
-=======
-- [@remuring9999](https://github.com/remuring9999)
->>>>>>> 7df62cf41ee39fdb36d7d887194e7f57a69a0f20

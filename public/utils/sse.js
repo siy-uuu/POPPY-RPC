@@ -46,6 +46,18 @@ async function SSE_Start(mainwindow) {
         console.log("Connection closed by server");
         sseEvents.close();
     });
+
+    sseEvents.onerror = (err) => {
+        SSE_Reconnect(mainwindow);
+    };
+
+    function SSE_Reconnect(mainwindow) {
+        console.log("SSE 연결이 끊어졌습니다. 재연결 중...");
+        SSE_Close();
+        setTimeout(() => {
+            SSE_Start(mainwindow);
+        }, 5000);
+    }
 }
 
 async function SSE_Close() {
