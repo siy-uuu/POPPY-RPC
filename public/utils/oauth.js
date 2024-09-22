@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const { Session } = require("./session.js");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");

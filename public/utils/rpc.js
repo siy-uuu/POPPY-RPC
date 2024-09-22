@@ -1,11 +1,14 @@
 const { ipcRenderer } = require("electron");
 const log = require("electron-log");
 
-const DiscordRPC = require("discord-rpc");
-const RPC = new DiscordRPC.Client({ transport: "ipc" });
-
-const clientId = "1152188384220033055";
-DiscordRPC.register(clientId);
+const { Client } = require("@xhayper/discord-rpc");
+const { ActivityType } = require("discord-api-types/v10");
+const client = new Client({
+    clientId: "1152188384220033055",
+    transport: {
+        type: "ipc",
+    },
+});
 
 let { Session } = require("./session.js");
 let { User } = require("./user.js");
@@ -15,14 +18,12 @@ let presenceStatus = true;
 class Rpc {
     async start() {
         let session = await new Session().get();
-
         if (!session) throw new Error("No Token");
 
         try {
-            RPC.login({
-                clientId: clientId,
-                accessToken: session.data.access_token,
-                scopes: ["identify"],
+            client.login({
+                refreshToken: session.data.refresh_token,
+                prompt: "none", // Only prompt once
             });
         } catch (error) {
             log.error(`RPC 연결실패: ${error.message}`);
@@ -31,30 +32,30 @@ class Rpc {
             }
         }
 
-        RPC.on("ready", async () => {
-            log.info(`RPC 연결완료 ${RPC.user.username} (${RPC.user.id})`);
+        client.on("ready", async () => {
+            log.info(`RPC 연결완료 ${client.user.username} (${client.user.id})`);
             let user = await new User().get();
-            if (user.id !== RPC.user.id) {
+            if (user.id !== client.user.id) {
                 return ipcRenderer.send("login");
             }
 
-            RPC.state = "ready";
+            client.state = "ready";
             this.updatePresence("Ready", {});
         });
 
-        RPC.on("disconnected", () => {
+        client.on("disconnected", () => {
             log.info(`RPC 연결해제`);
         });
     }
 
     get() {
-        return RPC;
+        return client;
     }
 
     Presence() {
         if (presenceStatus) {
             presenceStatus = false;
-            RPC.clearActivity();
+            client.clearActivity();
         } else {
             presenceStatus = true;
             this.updatePresence("Ready");
@@ -62,16 +63,16 @@ class Rpc {
     }
 
     destroy() {
-        RPC.destroy();
+        client.destroy();
     }
 
     updatePresence(type, data) {
         if (presenceStatus === false) return;
         switch (type) {
             case "Ready":
-                RPC.setActivity({
+                client.user.setActivity({
                     details: "재생 대기 중",
-                    largeImageKey: `https://poppymusic.xyz/image/Poppy.jpg`,
+                    largeImageKey: `https://poppymusic.xyz/static/images/Poppy.jpg`,
                     startTimestamp: new Date().getTime(),
                     buttons: [
                         {
@@ -84,15 +85,22 @@ class Rpc {
                 break;
 
             case "Playing":
-                RPC.setActivity({
+                data.track.uri = encodeURI(data.track.uri);
+                // if (data.track.uri.includes("https://music.apple.com/kr/album/")) {
+                //     const parameter = data.track.uri.replace("https://music.apple.com/kr/album/", "");
+                //     data.track.uri = `https://music.apple.com/kr/album/${encodeURIComponent(parameter)}`;
+                // }
+
+                client.user.setActivity({
+                    type: ActivityType.Listening,
                     details: data.track.title < 50 ? data.track.title.substring(0, 100) + "..." : data.track.title,
                     state: data.track.author < 50 ? data.track.author.substring(0, 100) + "..." : data.track.author,
-                    // endTimestamp: Math.floor((Date.now() + data.track.data.length - data.track.data.position) / 1000),
+                    endTimestamp: Math.floor((Date.now() + data.track.length - data.track.position) / 1000),
                     // startTimestamp: new Date().getTime(),
                     startTimestamp: new Date().getTime() - data.track.position,
-                    smallImageKey: "https://poppymusic.xyz/image/Playing.png",
+                    smallImageKey: "https://poppymusic.xyz/static/images/Playing.png",
                     smallImageText: "Playing",
-                    largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/image/Poppy.jpg`,
+                    largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/static/images/Poppy.jpg`,
                     buttons: [
                         {
                             label: "🐱 뽀삐 초대하기 🐱",
@@ -108,34 +116,37 @@ class Rpc {
                 break;
 
             case "Pause":
-                RPC.setActivity({
-                    details: data.track.title < 50 ? data.track.title.substring(0, 100) + "..." : data.track.title,
-                    state: data.track.author,
-                    // startTimestamp: new Date().getTime(),
-                    smallImageKey: "https://poppymusic.xyz/image/Pause.png",
-                    smallImageText: "Pause",
-                    largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/image/Poppy.jpg`,
-                    buttons: [
-                        {
-                            label: "🐱 뽀삐 초대하기 🐱",
-                            url: `https://discord.com/oauth2/authorize?client_id=896270994740764684&permissions=281357446256&redirect_uri=https://poppymusic.xyz/thanks&response_type=code&scope=bot%20applications.commands%20identify`,
-                        },
-                        {
-                            label: "음악 들어보기",
-                            url: `${data.track.uri}`,
-                        },
-                    ],
-                });
+                if (presenceStatus === true) client.user.clearActivity();
+                // client.user.setActivity({
+                //     type: ActivityType.Listening,
+                //     details: data.track.title < 50 ? data.track.title.substring(0, 100) + "..." : data.track.title,
+                //     state: data.track.author,
+                //     // startTimestamp: new Date().getTime(),
+                //     smallImageKey: "https://poppymusic.xyz/static/images/Pause.png",
+                //     smallImageText: "Pause",
+                //     largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/static/images/Poppy.jpg`,
+                //     buttons: [
+                //         {
+                //             label: "🐱 뽀삐 초대하기 🐱",
+                //             url: `https://discord.com/oauth2/authorize?client_id=896270994740764684&permissions=281357446256&redirect_uri=https://poppymusic.xyz/thanks&response_type=code&scope=bot%20applications.commands%20identify`,
+                //         },
+                //         {
+                //             label: "음악 들어보기",
+                //             url: `${data.track.uri}`,
+                //         },
+                //     ],
+                // });
 
                 break;
 
             case "Live":
-                RPC.setActivity({
+                client.user.setActivity({
+                    type: ActivityType.Listening,
                     details: data.track.title < 50 ? data.track.title.substring(0, 100) + "..." : data.track.title,
                     state: data.track.author < 50 ? data.track.author.substring(0, 100) + "..." : data.track.author,
-                    smallImageKey: "https://poppymusic.xyz/image/Live.png",
+                    smallImageKey: "https://poppymusic.xyz/static/images/Live.png",
                     smallImageText: "Live",
-                    largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/image/Poppy.jpg`,
+                    largeImageKey: data.track.artworkUrl || `https://poppymusic.xyz/static/images/Poppy.jpg`,
                     startTimestamp: new Date().getTime() - data.track.position,
                     // startTimestamp: new Date().getTime(),
                     buttons: [
