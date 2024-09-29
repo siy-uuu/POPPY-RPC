@@ -1,7 +1,7 @@
 {
     "name": "poppy-music",
     "description": "POPPY RPC",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "author": "siy-uuu",
     "license": "MIT",
     "private": true,
