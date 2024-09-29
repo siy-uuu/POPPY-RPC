@@ -113,7 +113,7 @@ const Main = () => {
                         <div className='flex mt-8 items-center justify-between'>
                             <div className='grid text-left'>
                                 <p className='text-[#F2F2F2] font-AppleSDGothicNeoSB00 text-xl text-clip overflow-hidden whitespace-nowrap'>{title}</p>
-                                <p className='text-[#d6d6d6] font-AppleSDGothicNeoM00 text-sm whitespace-nowrap'>{artist}</p>
+                                <p className='text-[#d6d6d6] font-AppleSDGothicNeoM00 text-sm text-clip overflow-hidden whitespace-nowrap'>{artist}</p>
                             </div>
 
                             <div className='ml-4 flex items-center gap-4'>
