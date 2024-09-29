@@ -25,6 +25,7 @@ async function SSE_Start(mainwindow) {
 
     sseEvents.onmessage = async (stream) => {
         const parsedData = JSON.parse(stream.data);
+        console.log(parsedData)
         if (parsedData.timestamp) return log.info(`SSE ping: ${Math.floor(new Date().getTime() / 1000) - Math.floor(Number(parsedData.timestamp) / 1000)}`);
         if (!parsedData.type) return log.info("No track data received");
         log.info("SSE 이벤트 수신");

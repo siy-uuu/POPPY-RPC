@@ -55,7 +55,7 @@ class Rpc {
     Presence() {
         if (presenceStatus) {
             presenceStatus = false;
-            client.clearActivity();
+            client.user.clearActivity();
         } else {
             presenceStatus = true;
             this.updatePresence("Ready");
