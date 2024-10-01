@@ -18,7 +18,7 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "@xhayper/discord-rpc": "^1.2.0",
-        "axios": "^1.7.2",
+        "axios": "^1.7.7",
         "discord-api-types": "^0.37.100",
         "dotenv": "^16.4.5",
         "electron-log": "^5.1.5",
