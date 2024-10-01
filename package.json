@@ -22,7 +22,7 @@
         "discord-api-types": "^0.37.100",
         "dotenv": "^16.4.5",
         "electron-log": "^5.1.5",
-        "electron-updater": "^6.2.1",
+        "electron-updater": "^6.3.0",
         "event-source-polyfill": "^1.0.31",
         "node-fetch": "^3.3.2",
         "react": "^18.3.1",
