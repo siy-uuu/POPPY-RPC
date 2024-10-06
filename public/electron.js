@@ -9,14 +9,19 @@ const { Oauth } = require("./utils/oauth.js");
 const { Session } = require("./utils/session.js");
 const { User } = require("./utils/user.js");
 const { Rpc } = require("./utils/rpc.js");
-let { SSE_Start, SSE_Close } = require("./utils/sse.js");
-let mainwindow;
-let loginwindow;
+const { SSE_Start, SSE_Close } = require("./utils/sse.js");
 
 let oauth = new Oauth();
 let RPC = new Rpc();
 let user = new User();
 let session = new Session();
+
+let mainwindow;
+let loginwindow;
+
+const mainPage = process.env?.NODE_ENV === "development" ? "http://localhost:3000" : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/" });
+const loginPage =
+    process.env?.NODE_ENV === "development" ? "http://localhost:3000/#/login" : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/login" });
 
 const mainwindow_Start = async () => {
     mainwindow = new BrowserWindow({
@@ -38,11 +43,7 @@ const mainwindow_Start = async () => {
     mainwindow.setMenu(null); // ctrl + W
 
     if (!(await session.get())) {
-        mainwindow.loadURL(
-            process.env?.NODE_ENV === "development"
-                ? "http://localhost:3000/#/login"
-                : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/login" })
-        );
+        mainwindow.loadURL(loginPage);
         mainwindow.show();
         return;
     }
@@ -50,18 +51,12 @@ const mainwindow_Start = async () => {
     let userData = await user.get();
 
     if (!userData) {
-        mainwindow.loadURL(
-            process.env?.NODE_ENV === "development"
-                ? "http://localhost:3000/#/login"
-                : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/login" })
-        );
+        mainwindow.loadURL(loginPage);
         mainwindow.show();
         return;
     }
 
-    mainwindow.loadURL(
-        process.env?.NODE_ENV === "development" ? "http://localhost:3000" : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/" })
-    );
+    mainwindow.loadURL(mainPage);
 
     mainwindow.webContents.once("did-finish-load", async () => {
         await mainwindow.webContents.send("user", userData);
@@ -116,11 +111,7 @@ ipcMain.on("logout", async () => {
     RPC.destroy();
     SSE_Close();
     user.delete();
-    await mainwindow.loadURL(
-        process.env?.NODE_ENV === "development"
-            ? "http://localhost:3000/#/login"
-            : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/login" })
-    );
+    await mainwindow.loadURL(loginPage);
     session.delete();
 });
 
@@ -162,16 +153,10 @@ if (!gotTheLock) {
                     .then(async () => {
                         loginwindow.destroy();
                         let userData = await user.get();
-                        await mainwindow
-                            .loadURL(
-                                process.env?.NODE_ENV === "development"
-                                    ? "http://localhost:3000"
-                                    : url.format({ pathname: path.join(__dirname, "../build/index.html"), protocol: "file:", slashes: true, hash: "/" })
-                            )
-                            .then(async () => {
-                                await mainwindow.webContents.send("user", userData);
-                                await RPC.start().then(() => SSE_Start(mainwindow));
-                            });
+                        await mainwindow.loadURL(mainPage).then(async () => {
+                            await mainwindow.webContents.send("user", userData);
+                            await RPC.start().then(() => SSE_Start(mainwindow));
+                        });
 
                         log.info("oauth2 코드 인증 성공");
                     })
